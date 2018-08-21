@@ -7,18 +7,40 @@
     "start": "babel-node src/index.js",
     "watch": "nodemon src/index.js --exec babel-node",
     "build": "babel src -d dist",
+    "build:client": "NODE_ENV=production webpack --progress",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "babel": {
-    "presets": ["es2015", "stage-2"]
+    "plugins": [
+      "transform-react-jsx"
+    ],
+    "presets": [
+      "es2015",
+      "stage-2"
+    ]
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "babel-cli": "^6.26.0",
+    "babel-loader": "^7.1.5",
+    "babel-plugin-transform-react-jsx": "^6.24.1",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-stage-2": "^6.24.1",
-    "nodemon": "^1.18.3"
+    "clean-webpack-plugin": "^0.1.19",
+    "file-loader": "^1.1.11",
+    "friendly-errors-webpack-plugin": "^1.7.0",
+    "koa-static": "^5.0.0",
+    "nodemon": "^1.18.3",
+    "react": "^16.4.2",
+    "react-dom": "^16.4.2",
+    "react-router-dom": "^4.3.1",
+    "webpack": "^4.16.5",
+    "webpack-bundle-analyzer": "^2.13.1",
+    "webpack-cli": "^3.1.0"
+  },
+  "dependencies": {
+    "koa": "^2.5.2"
   }
 }
