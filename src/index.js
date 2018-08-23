@@ -31,7 +31,7 @@ app.use(async (ctx, next) => {
   } else {
     await next()
   }
-})
+});
 
 app.use(async ctx => {
   const store = createStore();
@@ -43,9 +43,7 @@ app.use(async ctx => {
     .filter(component => component.serverFatch) // 检查是否有 serverFetch
     .map(comp => store.dispatch(comp.serverFatch())); // dispatch data requirement
   
-  const time = Date.now();
   await Promise.all(dataRequirements);
-  console.log('dataRequirements 执行完：%i ms', Date.now() - time, dataRequirements);
   const jsx = (
     <Provider store={store}>
       <StaticRouter context={{}} location={ctx.url}>
@@ -57,7 +55,6 @@ app.use(async ctx => {
   const bodystr = renderToString( jsx );  
   
   ctx.body = htmlTemplate(bodystr, reduxState);
-  console.log('body 相应完：%i ms', Date.now() - time);
 });
 
 app.listen(1337)
