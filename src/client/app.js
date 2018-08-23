@@ -1,8 +1,6 @@
 import React from 'react';
 import { Link, Switch, Route } from "react-router-dom";
-import Home from './components/Home';
-import About from './components/About';
-import Contact from './components/Contact';
+import routes from '../routes';
 
 class App extends React.Component {
   state = {
@@ -26,9 +24,9 @@ class App extends React.Component {
         <p>ok， amazing！！</p>
         <button onClick={this.say}>名字</button>
         <Switch>
-            <Route path="/" exact component={ Home } />
-            <Route path="/about" exact component={ About } />
-            <Route path="/contact" exact component={ Contact } />
+          {
+            routes.map(route => <Route key={route.path} { ...route } />)
+          }
         </Switch>
       </div>
     )
