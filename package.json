@@ -38,7 +38,8 @@
     "nodemon": "^1.18.3",
     "webpack": "^4.16.5",
     "webpack-bundle-analyzer": "^2.13.1",
-    "webpack-cli": "^3.1.0"
+    "webpack-cli": "^3.1.0",
+    "webpackbar": "^2.6.3"
   },
   "dependencies": {
     "babel-runtime": "^6.26.0",
@@ -50,6 +51,7 @@
     "react-redux": "^5.0.7",
     "react-router-dom": "^4.3.1",
     "redux": "^4.0.0",
-    "redux-thunk": "^2.3.0"
+    "redux-devtools-extension": "^2.13.5",
+    "redux-saga": "^0.16.0"
   }
 }

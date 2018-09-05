@@ -1,10 +1,12 @@
 const dev = process.env.NODE_ENV !== "production";
 const path = require( "path" );
+const WebpackBar = require('webpackbar');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const { BundleAnalyzerPlugin } = require( "webpack-bundle-analyzer" );
 const FriendlyErrorsWebpackPlugin = require( "friendly-errors-webpack-plugin" );
 
 const plugins = [
+  new WebpackBar(),
   new CleanWebpackPlugin(['dist']),
   new FriendlyErrorsWebpackPlugin()
 ];

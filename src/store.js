@@ -1,21 +1,7 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux';
-import thunk from 'redux-thunk';
-import { fetchTags } from './api';
-
-
-export const initialize = () => ({
-  type: 'INITIALIZE',
-  payload: "超管wyz已经登录",
-})
-
-const SET_TAGS_DATA = 'SET_TAGS_DATA';
-const setTags = (payload) => ({
-  type: SET_TAGS_DATA,
-  payload,
-})
-
-// async action
-export const fetchData = () => (dispatch) => fetchTags().then(data => dispatch(setTags(data)));
+import { composeWithDevTools } from 'redux-devtools-extension';
+import createSagaMiddleware from 'redux-saga';
+import { SET_TAGS_DATA } from './action';
 
 function main(state = { 
   msg: '',
@@ -23,9 +9,9 @@ function main(state = {
 }, action) {
   switch(action.type) {
     case 'INITIALIZE':
-      return Object.assign({}, state, { msg: action.payload });
+      return { ...state, msg: action.payload };
     case SET_TAGS_DATA:
-      return Object.assign({}, state, { tags: action.payload });
+      return { ...state, tags: action.payload };
     default:  return state;
   }
 }
@@ -34,4 +20,18 @@ const reducer = combineReducers({
   main,
 });
 
-export default (initialState) => createStore(reducer, initialState, applyMiddleware(thunk));
+const sagaMiddleware = createSagaMiddleware();
+
+export default (initialState) => {
+  return {
+    ...createStore(
+      reducer,
+      initialState, 
+      // applyMiddleware(sagaMiddleware),
+      composeWithDevTools(applyMiddleware(sagaMiddleware))
+    ),
+    runSaga: sagaMiddleware.run,
+    // close = () => store.dispatch(END)
+  }
+}
+

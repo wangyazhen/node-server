@@ -5,10 +5,12 @@ import { renderToString } from 'react-dom/server';
 import { StaticRouter, matchPath } from 'react-router-dom';
 import koaStatic from 'koa-static';
 import { Provider } from 'react-redux';
+import { END } from 'redux-saga';
 import App from './client/app';
 import routes from './routes';
-import createStore, { initialize } from './store';
-
+import rootSaga from './saga';
+import { initialize } from './action';
+import createStore from './store';
 
 const app = new Koa();
 
@@ -21,7 +23,7 @@ app.use(async (ctx, next) => {
   const start = Date.now();
   await next();
   const ms = Date.now() - start;
-  console.log(`${ctx.method} ${ctx.url} -- ${ms}`);
+  console.log(`${ctx.method} ${ctx.url} -- cost ${ms} ms`);
 });
 
 app.use(async (ctx, next) => {
@@ -35,7 +37,10 @@ app.use(async (ctx, next) => {
 
 app.use(async ctx => {
   const store = createStore();
+  const sagaTask = store.runSaga(rootSaga);
   store.dispatch(initialize());
+
+  store.close = () => store.dispatch(END);
 
   const dataRequirements = routes
     .filter(route => matchPath(ctx.url, route)) // 匹配route
@@ -43,7 +48,20 @@ app.use(async ctx => {
     .filter(component => component.serverFatch) // 检查是否有 serverFetch
     .map(comp => store.dispatch(comp.serverFatch())); // dispatch data requirement
   
-  await Promise.all(dataRequirements);
+  // 
+  // 触发第一次渲染， 可是返回值我们并不关心， 只要改变store即可
+  renderToString(<Provider store={store} >
+    <StaticRouter context={{}} location={ctx.url}>
+      <App />
+    </StaticRouter>
+  </Provider>)
+  // 关停saga， 第二次渲染的时候，忽略各种请求就好啦
+  store.close();
+
+  // 第二次渲染
+  // await Promise.all(dataRequirements)
+  await sagaTask.done;
+  console.log('saga task done 完成✅')
   const jsx = (
     <Provider store={store}>
       <StaticRouter context={{}} location={ctx.url}>

@@ -1,17 +1,19 @@
 import React from "react";
-import { fetchData } from '../../store';
+import { fetchTags } from '../../action';
 import { connect } from 'react-redux';
 
 class Home extends React.Component {
   componentDidMount() {
     console.log('这里是 home did mount ', this.props.tags.length);
     if (this.props.tags.length <= 0) {
-      this.props.fetchData();
+      console.log('发起', fetchTags());
+      this.props.dispatch(fetchTags());
     }
   }
   
   render() {
     const { tags } = this.props;
+    console.log('组件中tags :', tags.length);
     return (
       <div>        
         <h3>Welcome 首页</h3>
@@ -26,6 +28,6 @@ class Home extends React.Component {
   }
 }
 
-Home.serverFatch = fetchData;
+Home.serverFatch = fetchTags;
 
-export default connect((state) => ({ tags: state.main.tags }), { fetchData })(Home);
+export default connect((state) => ({ tags: state.main.tags }))(Home);
